@@ -68,11 +68,10 @@ function displayd3 () {
         .attr("width", width)
         .attr("height", height);
 
-    var node = svg.selectAll("circle")
+    var node = svg.selectAll(".node")
         .data(nodes)
-      .enter().append("circle")
-        .style("fill", function(d) { return colors[d.language]; })
-        .attr("r", function(d) { return 5*Math.log(d.size) } )
+        .enter().append("g")
+        .attr("class", "node")
         .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -92,13 +91,22 @@ function displayd3 () {
         d.fy = null;
     }
 
+    node.append("circle")
+        .style("fill", function(d) { return colors[d.language]; })
+        .attr("r", function(d) { return 5*Math.log(d.size) } )
+
+    node.append("text")
+        .attr("dx", function(d) { return 0 })
+        .attr("dy", function(d) { return 0 })
+        .text(function(d) { return d.name } );
+    console.log(node);
+
     forceSim.on("tick", 
         function tick(e) {
           node
             // .each(cluster(10 * e.alpha * e.alpha))
             // .each(collide(.5))
-            .attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; });
+            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
         }
     );
 
