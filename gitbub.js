@@ -52,8 +52,8 @@ function displayd3 () {
     // create a force simulation
     var forceSim = d3.forceSimulation(nodes)
         .force("charge", d3.forceManyBody().strength(chargeStrength))
-        .force("center", d3.forceCenter(width / 2, height / 2))
         .force("collide", d3.forceCollide(collideRadius).strength(1))
+        .force("center", d3.forceCenter(width / 2, height / 2))
         .alphaDecay(0);
     // Set the charge strength
     function chargeStrength(d) {
@@ -61,17 +61,20 @@ function displayd3 () {
     }
     // set the collision radius
     function collideRadius(d) {
-        return 5*Math.log(d.size);
+        return 12+5*Math.log(d.size);
     }
 
     var svg = d3.select("body").append("svg")
         .attr("width", width)
         .attr("height", height);
 
-    var node = svg.selectAll(".node")
+    var node = svg.append("g")
+        .attr("class", "nodes")
+        .selectAll("circle")
         .data(nodes)
-        .enter().append("g")
-        .attr("class", "node")
+        .enter().append("circle")
+        .style("fill", function(d) { return colors[d.language]; })
+        .attr("r", function(d) { return 12+5*Math.log(d.size) } )
         .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -91,21 +94,23 @@ function displayd3 () {
         d.fy = null;
     }
 
-    node.append("circle")
-        .style("fill", function(d) { return colors[d.language]; })
-        .attr("r", function(d) { return 5*Math.log(d.size) } )
-
-    node.append("text")
-        .attr("dx", function(d) { return 0 })
-        .attr("dy", function(d) { return 0 })
-        .text(function(d) { return d.name } );
-    console.log(node);
+    var text = svg.append("g")
+        .attr("class", "labels")
+        .selectAll("text")
+        .data(nodes)
+        .enter().append("text")
+        .attr("dx", function(d) { return -2.5*Math.log(d.size) })
+        // .attr("dy", function(d) { return 0 })
+        .text(function(d) { return d.name } )
+        .attr("font-size", "8px");
 
     forceSim.on("tick", 
         function tick(e) {
           node
             // .each(cluster(10 * e.alpha * e.alpha))
             // .each(collide(.5))
+            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+        text
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
         }
     );
