@@ -1,4 +1,11 @@
-// Inspiration taken heavily from http://bl.ocks.org/mbostock/7882658
+// Made in d3 v4
+// Inspiration taken heavily from:
+// Cluster Force Layout
+// http://bl.ocks.org/mbostock/7882658
+// Github visualizer in d3
+// http://ghv.artzub.com/#user=ztaira14
+// Graph with tooltips
+// https://bl.ocks.org/d3noob/257c360b3650b9f0a52dd8257d7a2d73
 
 function listener () {
     console.log("Recieved githubAPI response");
@@ -29,6 +36,7 @@ function displayd3 () {
     for (i = 0; i < numberOfNodes; i++) {
         if (!(languageIndex.hasOwnProperty(githubStuff[i]["language"]))) {
             languageIndex[githubStuff[i]["language"]] = clusterNum;
+            languageIndex[clusterNum] = githubStuff[i]["language"];
             clusterNum++;
         }
     }
@@ -52,7 +60,7 @@ function displayd3 () {
     // create a force simulation
     var forceSim = d3.forceSimulation(nodes)
         .force("charge", d3.forceManyBody().strength(chargeStrength))
-        .force("collide", d3.forceCollide(collideRadius).strength(1))
+        .force("collide", d3.forceCollide(collideRadius).strength(1).iterations(3))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .alphaDecay(0);
     // Set the charge strength
@@ -63,6 +71,11 @@ function displayd3 () {
     function collideRadius(d) {
         return 12+5*Math.log(d.size);
     }
+
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0)
+        .html("Hello World");
 
     var svg = d3.select("body").append("svg")
         .attr("width", width)
@@ -78,7 +91,26 @@ function displayd3 () {
         .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
-                .on("end", dragended));
+                .on("end", dragended))
+        .on("mouseenter", function (d) {
+          div.transition()
+              .duration(200)
+              .style("opacity", .8);
+          div.html("Name: " + d.name + "<br>Size: " + d.size + "<br>Language: " + languageIndex[d.language])
+              .style("left", (d3.event.pageX) + "px")
+              .style("top", (d3.event.pageY - 28) + "px");
+          })
+        .on("mouseleave", function (d) {
+          div.transition()
+              .duration(500)
+              .style("opacity", 0);
+        })
+        .on("click", function (d) {
+            ztairaGithub = "https://github.com/ztaira14/";
+            d3.event.stopPropagation();
+            window.open(ztairaGithub + d.name);
+        });
+    console.log(node);
     function dragstarted(d) {
         if (!d3.event.active) forceSim.alphaTarget(0.3).restart();
         d.fx = d.x;
@@ -94,81 +126,12 @@ function displayd3 () {
         d.fy = null;
     }
 
-    var text = svg.append("g")
-        .attr("class", "labels")
-        .selectAll("text")
-        .data(nodes)
-        .enter().append("text")
-        .attr("dx", function(d) { return -2.5*Math.log(d.size) })
-        // .attr("dy", function(d) { return 0 })
-        .text(function(d) { return d.name } )
-        .attr("font-size", "8px");
-
     forceSim.on("tick", 
         function tick(e) {
           node
-            // .each(cluster(10 * e.alpha * e.alpha))
-            // .each(collide(.5))
-            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-        text
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
         }
     );
-
-    // node.transition()
-        // .duration(750)
-        // .delay(function(d, i) { return i * 5; })
-        // .attrTween("r", function(d) {
-          // var i = d3.interpolate(0, d.radius);
-          // return function(t) { return d.radius = i(t); };
-        // });
-
-    // Move d to be adjacent to the cluster node.
-    // function cluster(alpha) {
-      // return function(d) {
-        // var cluster = clusters[d.cluster];
-        // if (cluster === d) return;
-        // var x = d.x - cluster.x,
-            // y = d.y - cluster.y,
-            // l = Math.sqrt(x * x + y * y),
-            // r = d.radius + cluster.radius;
-        // if (l != r) {
-          // l = (l - r) / l * alpha;
-          // d.x -= x *= l;
-          // d.y -= y *= l;
-          // cluster.x += x;
-          // cluster.y += y;
-        // }
-      // };
-    // }
-
-// Resolves collisions between d and all other circles.
-    // function collide(alpha) {
-      // var quadtree = d3.geom.quadtree(nodes);
-      // return function(d) {
-        // var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
-            // nx1 = d.x - r,
-            // nx2 = d.x + r,
-            // ny1 = d.y - r,
-            // ny2 = d.y + r;
-        // quadtree.visit(function(quad, x1, y1, x2, y2) {
-          // if (quad.point && (quad.point !== d)) {
-            // var x = d.x - quad.point.x,
-                // y = d.y - quad.point.y,
-                // l = Math.sqrt(x * x + y * y),
-                // r = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
-            // if (l < r) {
-                // l = (l - r) / l * alpha;
-                // d.x -= x *= l;
-                // d.y -= y *= l;
-                // quad.point.x += x;
-                // quad.point.y += y;
-            // }
-          // }
-          // return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-        // });
-      // };
-    // }
 }
 
 // Set the base URL for now
