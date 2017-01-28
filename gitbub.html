@@ -3,6 +3,11 @@
     <head>
         <script type="text/javascript" src="d3.min.js"></script>
         <style>
+        p {
+            text-align: center;
+            font: 32px sans-serif;
+            padding: 10px;
+        }
         div.tooltip {
             position: absolute;
             text-align: center;
@@ -14,10 +19,18 @@
             border-radius: 8px;
             pointer-events: none;
         }
+        svg {
+            border: 3px;
+            border-style: solid;
+            border-color: black;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
         </style>
     </head>
     <body>
-        <div class="loadingtext">
+        <div class="titletext">
             <p>Github Visualizer in d3</p>
         </div>
         <script type="text/javascript" src="gitbub.js"></script>

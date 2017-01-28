@@ -17,19 +17,11 @@ function displayd3 () {
     // get github stuff out of local storage
     var githubStuff = JSON.parse(localStorage.getItem("githubAPI_response"));
     var numberOfNodes = githubStuff.length
-    // console.log(githubStuff);
-    // console.log(numberOfNodes);
 
     // width of svg
-    var width = 800,
+    var width = 960,
         // height of svg element
-        height = 500,
-        // distance between same-color nodes
-        padding = 1.5,
-        // distance between different-color nodes
-        clusterPadding = 6,
-        // radius of circle?
-        maxRadius = 12;
+        height = 600;
     
     // label the languages with a numerical ID to sort by
     var languageIndex = {}, clusterNum = 0;
@@ -54,9 +46,6 @@ function displayd3 () {
     // create color scale
     var colors = d3.schemeCategory20;
 
-    // use packing layout
-    // d3.pack(nodes);
-
     // create a force simulation
     var forceSim = d3.forceSimulation(nodes)
         .force("charge", d3.forceManyBody().strength(chargeStrength))
@@ -72,26 +61,33 @@ function displayd3 () {
         return 12+5*Math.log(d.size);
     }
 
+    // create the tooltip text
     var div = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0)
         .html("Hello World");
 
+    // create the svg
     var svg = d3.select("body").append("svg")
         .attr("width", width)
         .attr("height", height);
 
+    // create the nodes in the svg
     var node = svg.append("g")
         .attr("class", "nodes")
         .selectAll("circle")
         .data(nodes)
         .enter().append("circle")
+        // the color of each node
         .style("fill", function(d) { return colors[d.language]; })
+        // the size of each node
         .attr("r", function(d) { return 12+5*Math.log(d.size) } )
+        // functions to call when dragged
         .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended))
+        // show the tooltip on mouseover
         .on("mouseenter", function (d) {
           div.transition()
               .duration(200)
@@ -99,18 +95,20 @@ function displayd3 () {
           div.html("Name: " + d.name + "<br>Size: " + d.size + "<br>Language: " + languageIndex[d.language])
               .style("left", (d3.event.pageX) + "px")
               .style("top", (d3.event.pageY - 28) + "px");
-          })
+        })
+        // hide the tooltip on mouseleave
         .on("mouseleave", function (d) {
           div.transition()
               .duration(500)
               .style("opacity", 0);
         })
+        // when clicked, open the repository the node represents
         .on("click", function (d) {
             ztairaGithub = "https://github.com/ztaira14/";
             d3.event.stopPropagation();
             window.open(ztairaGithub + d.name);
         });
-    console.log(node);
+    // what to do when dragged
     function dragstarted(d) {
         if (!d3.event.active) forceSim.alphaTarget(0.3).restart();
         d.fx = d.x;
@@ -126,6 +124,7 @@ function displayd3 () {
         d.fy = null;
     }
 
+    // tick function
     forceSim.on("tick", 
         function tick(e) {
           node
