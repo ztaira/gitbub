@@ -19,9 +19,9 @@ function displayd3 () {
     var numberOfNodes = githubStuff.length
 
     // width of svg
-    var width = 960,
+    var width = window.innerWidth * 0.75 ,
         // height of svg element
-        height = 600;
+        height = window.innerHeight * 0.75;
     
     // label the languages with a numerical ID to sort by
     var languageIndex = {}, clusterNum = 0;
@@ -46,7 +46,7 @@ function displayd3 () {
     // create color scale
     var colors = d3.schemeCategory20;
 
-    // create a force simulation
+    // create a force simulation with the nodes
     var forceSim = d3.forceSimulation(nodes)
         .force("charge", d3.forceManyBody().strength(chargeStrength))
         .force("collide", d3.forceCollide(collideRadius).strength(1).iterations(3))
@@ -60,18 +60,15 @@ function displayd3 () {
     function collideRadius(d) {
         return 12+5*Math.log(d.size);
     }
-
     // create the tooltip text
     var div = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0)
         .html("Hello World");
-
     // create the svg
     var svg = d3.select("body").append("svg")
         .attr("width", width)
         .attr("height", height);
-
     // create the nodes in the svg
     var node = svg.append("g")
         .attr("class", "nodes")
@@ -123,6 +120,28 @@ function displayd3 () {
         d.fx = null;
         d.fy = null;
     }
+
+    // create the labels
+    for (i = 0; i < clusterNum; i++) {
+        var language;
+        if (languageIndex[i] == null) {
+            language = 'null';
+        } else {
+            language = languageIndex[i];
+        }
+        d3.select(".titletext").append("p")
+            .html(language)
+            .attr("class", "title")
+            .style("margin", "0px")
+            .style("border", "0px")
+            .style("background", colors[i])
+            .style("text-align", "center")
+            .style("font-size", "16px");
+    }
+    // for (i = 0; i < 2; i++) {
+        // d3.select(".titletext").append("br");
+    // }
+
 
     // tick function
     forceSim.on("tick", 
