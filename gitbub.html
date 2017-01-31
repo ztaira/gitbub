@@ -9,11 +9,17 @@
         .title {
             text-align: center;
             font: 32px sans-serif;
+            color: black;
             padding: 20px;
             border: 3px;
             border-style: solid;
             border-color: black;
             margin: 0px;
+            background: white;
+        }
+        .labels {
+            text-align: center;
+            padding: 20px;
         }
         div.tooltip {
             position: absolute;
@@ -33,14 +39,18 @@
             display: block;
             margin-left: auto;
             margin-right: auto;
+            background: white;
+        }
+        body {
+            background: lightgrey;
         }
         </style>
     </head>
     <body>
         <div class="titletext">
             <p class="title">Github Visualizer in d3</p>
-            <table></table>
         </div>
+        <div class="labels"><div>
         <script type="text/javascript" src="gitbub.js"></script>
     </body>
 </html>

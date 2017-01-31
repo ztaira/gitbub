@@ -129,19 +129,19 @@ function displayd3 () {
         } else {
             language = languageIndex[i];
         }
-        d3.select(".titletext").append("p")
+        d3.select(".labels").append("span")
             .html(language)
             .attr("class", "title")
             .style("margin", "0px")
             .style("border", "0px")
             .style("background", colors[i])
             .style("text-align", "center")
-            .style("font-size", "16px");
+            .style("font-size", "16px")
+            .style("color", "black");
     }
-    // for (i = 0; i < 2; i++) {
-        // d3.select(".titletext").append("br");
-    // }
 
+    for (i = 0; i < clusterNum; i++) {
+    }
 
     // tick function
     forceSim.on("tick", 
