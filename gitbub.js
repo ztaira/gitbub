@@ -54,7 +54,7 @@ function displayd3 () {
     .alphaDecay(0);
   // Set the charge strength
   function chargeStrength(d) {
-    return d.size/500;
+    return 3.141*((12+5*Math.log(d.size))**2)/500;
   }
   // set the collision radius
   function collideRadius(d) {
@@ -64,6 +64,9 @@ function displayd3 () {
   var div = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0)
+    .style("-webkit-user-select", "none")
+    .style("-moz-user-select", "none")
+    .style("-ms-user-select", "none")
     .html("Hello World");
 
   // create the svg
@@ -131,6 +134,9 @@ function displayd3 () {
     .enter().append("text")
     .attr("dy", function(d) { return "4px" } )
     .text(function(d) { return d.size } )
+    .style("-webkit-user-select", "none")
+    .style("-moz-user-select", "none")
+    .style("-ms-user-select", "none")
     .attr("text-anchor", "middle");
 
   // create the key
