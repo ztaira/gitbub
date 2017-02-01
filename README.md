@@ -9,11 +9,13 @@ to see the language spread and relative sizes of your repositories
 ### Features:
 - Fun to play with
 - Cool way to break down what I've been doing recently
+- Disappearing tooltip for unobtrusive access to information
 
 ### What it does:
 - Gets my Github info via https://api.github.com/users/ztaira14/repos
 - Uses d3 to create a force diagram of this info based on the size and language
 of each repository
+- Repositions and shows/hides the tooltip upon mouseenter/mouseleave events
 - Enables fun way to visualize and link to each repository
 
 ### What it doesn't do:
