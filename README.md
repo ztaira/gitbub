@@ -2,7 +2,8 @@
 Hack-A-Week 15: Fun Github visualization using d3
 
 ### Usage:
-- Open gitbub.html in the browser of your choice
+- Visit https://ztaira14.github.io/gitbub/ for hosted version
+- Open gitbub.html in the browser of your choice for local version
 - Optionally replace "ztaira14" in the gitbub.js file with your Github username
 to see the language spread and relative sizes of your repositories
 
