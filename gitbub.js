@@ -19,7 +19,7 @@ function displayd3 () {
   var numberOfNodes = githubStuff.length;
 
   // width of svg
-  var width = window.innerWidth * 0.75 ,
+  var width = window.innerWidth * 0.75,
     // height of svg element
     height = window.innerHeight * 0.75;
 
@@ -46,20 +46,21 @@ function displayd3 () {
   // create color scale
   var colors = d3.schemeCategory20;
 
+  // function to set the charge strength
+  function chargeStrength(d) {
+    return ((3.141*(nodeSize(d)*nodeSize(d)))/500);
+  }
+  // function to set the collision radius
+  function nodeSize(d) {
+    return 12+3*Math.log(d.size);
+  }
   // create a force simulation with the nodes
   var forceSim = d3.forceSimulation(nodes)
     .force("charge", d3.forceManyBody().strength(chargeStrength))
-    .force("collide", d3.forceCollide(collideRadius).strength(1).iterations(3))
+    .force("collide", d3.forceCollide(nodeSize).strength(1).iterations(3))
     .force("center", d3.forceCenter(width / 2, height / 2))
     .alphaDecay(0);
-  // Set the charge strength
-  function chargeStrength(d) {
-    return ((3.141*((12+5*Math.log(d.size))*(12+5*Math.log(d.size))))/500);
-  }
-  // set the collision radius
-  function collideRadius(d) {
-    return 12+5*Math.log(d.size);
-  }
+
   // create the tooltip text
   var div = d3.select("body").append("div")
     .attr("class", "tooltip")
@@ -74,6 +75,21 @@ function displayd3 () {
     .attr("width", width)
     .attr("height", height);
 
+  // what to do when a node is dragged
+  function dragstarted(d) {
+    if (!d3.event.active) forceSim.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+  function dragged(d) {
+    d.fx = d3.event.x;
+    d.fy = d3.event.y;
+  }
+  function dragended(d) {
+    if (!d3.event.active) forceSim.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
   // create the nodes in the svg
   var node = svg.append("g")
     .attr("class", "nodes")
@@ -83,7 +99,7 @@ function displayd3 () {
     // the color of each node
     .style("fill", function(d) { return colors[d.language]; })
     // the size of each node
-    .attr("r", function(d) { return 12+5*Math.log(d.size); } )
+    .attr("r", nodeSize)
     // functions to call when dragged
     .call(d3.drag()
       .on("start", dragstarted)
@@ -110,21 +126,6 @@ function displayd3 () {
       d3.event.stopPropagation();
       window.open(ztairaGithub + d.name);
     });
-  // what to do when dragged
-  function dragstarted(d) {
-    if (!d3.event.active) forceSim.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
-  }
-  function dragged(d) {
-    d.fx = d3.event.x;
-    d.fy = d3.event.y;
-  }
-  function dragended(d) {
-    if (!d3.event.active) forceSim.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
-  }
 
   // create the node labels
   var text = svg.append("g")
