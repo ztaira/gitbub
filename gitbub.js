@@ -16,19 +16,19 @@ function listener () {
 function displayd3 () {
   // get github stuff out of local storage
   var githubStuff = JSON.parse(localStorage.getItem("githubAPI_response"));
-  var numberOfNodes = githubStuff.length
+  var numberOfNodes = githubStuff.length;
 
   // width of svg
   var width = window.innerWidth * 0.75 ,
     // height of svg element
     height = window.innerHeight * 0.75;
-  
+
   // label the languages with a numerical ID to sort by
   var languageIndex = {}, clusterNum = 0;
   for (i = 0; i < numberOfNodes; i++) {
-    if (!(languageIndex.hasOwnProperty(githubStuff[i]["language"]))) {
-      languageIndex[githubStuff[i]["language"]] = clusterNum;
-      languageIndex[clusterNum] = githubStuff[i]["language"];
+    if (!(languageIndex.hasOwnProperty(githubStuff[i].language))) {
+      languageIndex[githubStuff[i].language] = clusterNum;
+      languageIndex[clusterNum] = githubStuff[i].language;
       clusterNum++;
     }
   }
@@ -37,10 +37,10 @@ function displayd3 () {
   var nodes = new Array(numberOfNodes);
   for (i = 0; i < numberOfNodes; i++) {
     nodes[i] = {
-      "size": githubStuff[i]["size"],
-      "language": languageIndex[githubStuff[i]["language"]],
-      "name": githubStuff[i]["name"]
-    }
+      "size": githubStuff[i].size,
+      "language": languageIndex[githubStuff[i].language],
+      "name": githubStuff[i].name
+    };
   }
   console.log(nodes);
   // create color scale
@@ -54,7 +54,7 @@ function displayd3 () {
     .alphaDecay(0);
   // Set the charge strength
   function chargeStrength(d) {
-    return 3.141*((12+5*Math.log(d.size))**2)/500;
+    return ((3.141*((12+5*Math.log(d.size))*(12+5*Math.log(d.size))))/500);
   }
   // set the collision radius
   function collideRadius(d) {
@@ -83,7 +83,7 @@ function displayd3 () {
     // the color of each node
     .style("fill", function(d) { return colors[d.language]; })
     // the size of each node
-    .attr("r", function(d) { return 12+5*Math.log(d.size) } )
+    .attr("r", function(d) { return 12+5*Math.log(d.size); } )
     // functions to call when dragged
     .call(d3.drag()
       .on("start", dragstarted)
@@ -93,7 +93,7 @@ function displayd3 () {
     .on("mouseenter", function (d) {
       div.transition()
         .duration(200)
-        .style("opacity", .8);
+        .style("opacity", 0.8);
       div.html("Name: " + d.name + "<br>Size: " + d.size + "<br>Language: " + languageIndex[d.language])
         .style("left", (d3.event.pageX) + "px")
         .style("top", (d3.event.pageY - 28) + "px");
@@ -132,8 +132,8 @@ function displayd3 () {
     .selectAll("text")
     .data(nodes)
     .enter().append("text")
-    .attr("dy", function(d) { return "4px" } )
-    .text(function(d) { return d.size } )
+    .attr("dy", function(d) { return "4px"; } )
+    .text(function(d) { return d.size; } )
     .style("-webkit-user-select", "none")
     .style("-moz-user-select", "none")
     .style("-ms-user-select", "none")
@@ -142,7 +142,7 @@ function displayd3 () {
   // create the key
   for (i = 0; i < clusterNum; i++) {
     var language;
-    if (languageIndex[i] == null) {
+    if (languageIndex[i] === null) {
       language = 'null';
     } else {
       language = languageIndex[i];
@@ -159,12 +159,12 @@ function displayd3 () {
   }
 
   // tick function
-  forceSim.on("tick", 
+  forceSim.on("tick",
     function tick(e) {
       node
-        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
       text
-        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
     }
   );
 }
@@ -178,5 +178,4 @@ githubAPI.open("GET", baseURL);
 githubAPI.addEventListener("load", listener);
 githubAPI.send();
 
-console.log("Sent githubAPI request")
-
+console.log("Sent githubAPI request");
