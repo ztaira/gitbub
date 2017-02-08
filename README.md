@@ -3,7 +3,7 @@ Hack-A-Week 15: Fun Github visualization using d3
 
 ### Usage:
 - Visit https://ztaira14.github.io/gitbub/ for hosted version
-- Open gitbub.html in the browser of your choice for local version
+- Open index.html in the browser of your choice for local version
 - Optionally replace "ztaira14" in the gitbub.js file with your Github username
 to see the language spread and relative sizes of your repositories
 
@@ -26,9 +26,9 @@ of each repository
 ### Included Files:
 ```
 - README.md..................This readme file
-- d3.min.js..................d3, a cool visualization library
-- gitbub.html................HTML/CSS file
+- index.html.................HTML/CSS file
 - gitbub.js..................JS file, linked to by gitbub.html
+- d3.min.js..................d3, a cool visualization library
 - diagrams/..................Images of final result
 ```
 
