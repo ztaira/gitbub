@@ -138,6 +138,21 @@ function displayd3 () {
     .style("-webkit-user-select", "none")
     .style("-moz-user-select", "none")
     .style("-ms-user-select", "none")
+    // show the tooltip on mouseover
+    .on("mouseenter", function (d) {
+      div.transition()
+        .duration(200)
+        .style("opacity", 0.8);
+      div.html("Name: " + d.name + "<br>Size: " + d.size + "<br>Language: " + languageIndex[d.language])
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+    })
+    // hide the tooltip on mouseleave
+    .on("mouseleave", function (d) {
+      div.transition()
+        .duration(500)
+        .style("opacity", 0);
+    })
     .attr("text-anchor", "middle");
 
   // create the key
