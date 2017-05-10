@@ -33,5 +33,4 @@ of each repository
 ```
 
 ### Example Output:
-![alt text][outputimage]
-[outputimage]: https://github.com/ztaira14/gitbub/blob/master/diagrams/gitbub.png "Repositories as of 2-1-2017"
+![alt text](https://github.com/ztaira14/gitbub/blob/master/diagrams/gitbub.png "Repositories as of 2-1-2017")
